@@ -5,22 +5,27 @@ csv_path = "./questions.csv"
 
 class Question:
     def __init__(self, question, options):
-        self.options = options
         self.question = question
+        self.answer = options[-1]
 
-        self.answer = self.options[-1]
-
-        self.shuffle_options()
+        self.shuffle_options(options)
 
     def is_response_correct(self, response):
-        return response == self.answer
+        return response == self.options[self.answer]
     
     # options should be shuffled first as the answer is always the last option in the csv
-    def shuffle_options(self):
-        random.shuffle(self.options)
+    def shuffle_options(self, options):
+        random.shuffle(options)
+        self.options = {
+            options[0]:"a",
+            options[1]:"b",
+            options[2]:"c",
+            options[3]:"d",
+        }
     
 class Game:
     questions = []
+    current_safety_net_amount = 0
     def __init__(self):
         self.load_questions(csv_path)
         
@@ -28,9 +33,16 @@ class Game:
         self.contestant_name = input("What is your name contestant? ")
         print("Welcome " + self.contestant_name + ", Let's get started!")
 
-        print("1." + self.questions[0].question)
-        print("a. {optionA}                                    b. {optionB} \nc. {optionC}                                    d. {optionD}".format(optionA=self.questions[0].options[0],optionB=self.questions[0].options[1],optionC=self.questions[0].options[2],optionD=self.questions[0].options[3]))
+        for question in self.questions:
+            index = 1
+            print("\n" + str(index)+ ". " + question.question)
+            for key, value in question.options.items():
+                print(value + '. ' + key)
+            response = input("Your response: ")
+            index += 1
+            print(question.is_response_correct(response))
 
+        
     def load_questions(self, csv_path):
         with open(csv_path, 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
