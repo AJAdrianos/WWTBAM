@@ -80,8 +80,8 @@ class Game:
 
 
     def victory(self):
-        # Player won the game
-        return ""
+        print("Congratulations " + self.contestant_name + "!")
+        print("You are going home with " + str(self.round_amounts[15]))
 
     def game_over(self, index):
         question_number = index + 1
